@@ -1,0 +1,45 @@
+{
+    "name": "rustamwin/attributes",
+    "type": "library",
+    "description": "attributes",
+    "keywords": [
+        "attributes"
+    ],
+    "homepage": "https://github.com/rustamwin",
+    "license": "MIT",
+    "support": {
+        "issues": "https://github.com/rustamwin/attributes/issues?state=open",
+        "source": "https://github.com/rustamwin/attributes"
+    },
+    "require": {
+        "php": "^7.4|^8.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.4",
+        "roave/infection-static-analysis-plugin": "^1.5",
+        "spatie/phpunit-watcher": "^1.23",
+        "vimeo/psalm": "^4.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Rustamwin\\Attributes\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Rustamwin\\Attributes\\Tests\\": "tests"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    },
+    "scripts": {
+        "test": "phpunit --testdox --no-interaction",
+        "test-watch": "phpunit-watcher watch"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
