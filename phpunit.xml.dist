@@ -16,7 +16,7 @@
     </php>
 
     <testsuites>
-        <testsuite name="Yii Stack _____ tests">
+        <testsuite name="Attributes tests">
             <directory>./tests</directory>
         </testsuite>
     </testsuites>

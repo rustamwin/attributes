@@ -22,12 +22,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Rustamwin\\Attributes\\": "src"
+            "RustamWin\\Attributes\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Rustamwin\\Attributes\\Tests\\": "tests"
+            "RustamWin\\Attributes\\Tests\\": "tests"
         }
     },
     "extra": {
