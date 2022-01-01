@@ -5,13 +5,10 @@ declare(strict_types=1);
 namespace RustamWin\Attributes\Reader;
 
 use JetBrains\PhpStorm\Pure;
-use Mbunge\PhpAttributes\Resolver\AttributeDto;
 use ReflectionAttribute;
 use ReflectionClass;
-use ReflectionException;
 use ReflectionMethod;
 use Reflector;
-use RustamWin\Attributes\Dto\Attribute;
 use RustamWin\Attributes\Dto\ResolvedAttribute;
 use RustamWin\Attributes\Instantiator\Instantiator;
 use RustamWin\Attributes\Instantiator\InstantiatorInterface;
@@ -26,12 +23,9 @@ final class AttributeReader implements AttributeReaderInterface
 
     /**
      * @inheritDoc
-     * @throws ReflectionException
      */
-    public function read(string $className): array
+    public function read(ReflectionClass $ref): array
     {
-        $ref = new ReflectionClass($className);
-
         return array_merge(
             $this->readClassAttributes($ref),
             $this->readConstantAttributes($ref),
@@ -47,24 +41,24 @@ final class AttributeReader implements AttributeReaderInterface
 
     private function readConstantAttributes(ReflectionClass $class): array
     {
-        $target = $class->getReflectionConstants();
-        return $this->flatMap($target);
+        $constants = $class->getReflectionConstants();
+        return $this->mapAttributes($constants);
     }
 
     private function readPropertyAttributes(ReflectionClass $class): array
     {
-        $target = $class->getProperties();
-        return $this->flatMap($target);
+        $properties = $class->getProperties();
+        return $this->mapAttributes($properties);
     }
 
     private function readMethodAttributes(ReflectionClass $class): array
     {
-        $target = $class->getMethods();
-        $mappedMethods = $this->flatMap($target);
+        $methods = $class->getMethods();
+        $mappedMethods = $this->mapAttributes($methods);
 
         $mappedParameters = array_map(
             fn ($method) => $this->readParameterAttributes($method),
-            $target
+            $methods
         );
 
         return array_merge($mappedMethods, ...$mappedParameters);
@@ -72,22 +66,22 @@ final class AttributeReader implements AttributeReaderInterface
 
     private function readParameterAttributes(ReflectionMethod $method): array
     {
-        $target = $method->getParameters();
-        return $this->flatMap($target);
+        $parameters = $method->getParameters();
+        return $this->mapAttributes($parameters);
     }
 
     /**
-     * @param Reflector $class
-     * @return Attribute[]
+     * @param Reflector $ref
+     * @return ResolvedAttribute[]
      */
-    private function readAttributes(Reflector $class): array
+    private function readAttributes(Reflector $ref): array
     {
         return array_map(
             static fn (ReflectionAttribute $attribute) => new ResolvedAttribute(
                 attribute: $this->instantiator->instantiate($attribute),
-                reflectionTarget: $class
+                reflectionTarget: $ref
             ),
-            $this->filterAttributes($class->getAttributes())
+            $this->filterAttributes($ref->getAttributes())
         );
     }
 
@@ -100,16 +94,17 @@ final class AttributeReader implements AttributeReaderInterface
     }
 
     /**
-     * @param array $target
+     * @param Reflector[] $targets
+     * @psalm-param list<Reflector> $targets
      * @return array
      */
-    private function flatMap(array $target): array
+    private function mapAttributes(array $targets): array
     {
-        $mappedRef = array_map(
-            fn ($specificRef) => $this->readAttributes($specificRef),
-            $target
+        $resolvedAttributes = array_map(
+            fn ($targetRef) => $this->readAttributes($targetRef),
+            $targets
         );
 
-        return array_merge(...$mappedRef);
+        return array_merge(...$resolvedAttributes);
     }
 }
