@@ -77,11 +77,11 @@ final class AttributeReader implements AttributeReaderInterface
     private function readAttributes(Reflector $ref): array
     {
         return array_map(
-            static fn (ReflectionAttribute $attribute) => new ResolvedAttribute(
+            fn (ReflectionAttribute $attribute) => new ResolvedAttribute(
                 attribute: $this->instantiator->instantiate($attribute),
                 reflectionTarget: $ref
             ),
-            $this->filterAttributes($ref->getAttributes())
+            $this->filterAttributes(...$ref->getAttributes())
         );
     }
 

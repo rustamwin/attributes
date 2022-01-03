@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace RustamWin\Attributes\Presenter;
 
 use Generator;
+use ReflectionClass;
 
 final class CompositePresenter implements AttributePresenterInterface
 {
@@ -18,10 +19,10 @@ final class CompositePresenter implements AttributePresenterInterface
     /**
      * @inheritDoc
      */
-    public function present(array $attributes): Generator
+    public function present(ReflectionClass $class, array $attributes): Generator
     {
         foreach ($this->presenters as $presenter) {
-            yield $presenter->present($attributes);
+            yield $presenter->present($class, $attributes);
         }
     }
 }

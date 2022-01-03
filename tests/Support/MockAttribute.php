@@ -7,10 +7,10 @@ namespace RustamWin\Attributes\Tests\Support;
 use Attribute;
 use JetBrains\PhpStorm\Immutable;
 
-#[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_CLASS | Attribute::TARGET_METHOD)]
+#[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD)]
 final class MockAttribute
 {
-    public function __construct(#[Immutable] public string $value)
+    public function __construct(#[Immutable] public string $value, public array $args = [])
     {
     }
 }

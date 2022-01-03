@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace RustamWin\Attributes\Dto;
 
+use ReflectionClass;
 use Reflector;
 
 final class ResolvedAttribute
@@ -20,6 +21,9 @@ final class ResolvedAttribute
         return $this->attribute;
     }
 
+    /**
+     * @return ReflectionClass|\ReflectionClassConstant|\ReflectionProperty|\ReflectionMethod|\ReflectionParameter
+     */
     public function getReflectionTarget(): Reflector
     {
         return $this->reflectionTarget;

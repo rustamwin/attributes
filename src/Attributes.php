@@ -6,6 +6,7 @@ namespace RustamWin\Attributes;
 
 use ReflectionClass;
 use RustamWin\Attributes\Presenter\AttributePresenterInterface;
+use RustamWin\Attributes\Reader\AttributeReader;
 use RustamWin\Attributes\Reader\AttributeReaderInterface;
 use Spiral\Tokenizer\ClassLocator;
 use SplObjectStorage;
@@ -23,10 +24,10 @@ final class Attributes
     private array $classes = [];
 
     public function __construct(
-        AttributeReaderInterface $attributeReader,
-        AttributePresenterInterface $attributePresenter
+        AttributePresenterInterface $attributePresenter,
+        ?AttributeReaderInterface $attributeReader = null,
     ) {
-        $this->attributeReader = $attributeReader;
+        $this->attributeReader = $attributeReader ?? new AttributeReader(new Instantiator\Instantiator());
         $this->attributePresenter = $attributePresenter;
         $this->attributes = new SplObjectStorage();
     }
@@ -37,8 +38,31 @@ final class Attributes
         $classes = array_unique(array_merge($this->getClasses(), $this->loadClasses()));
         foreach ($classes as $reflectionClass) {
             $resolvedAttributes = $this->attributeReader->read($reflectionClass);
-            $this->attributes->attach($reflectionClass, $resolvedAttributes);
+            $this->attributes->attach($reflectionClass);
+            $this->attributePresenter->present($reflectionClass, $resolvedAttributes);
         }
+    }
+
+    /**
+     * @param array $classes
+     * @return $this
+     */
+    public function setClasses(array $classes): self
+    {
+        $this->classes = $classes;
+
+        return $this;
+    }
+
+    /**
+     * @param array $directories
+     * @return $this
+     */
+    public function setDirectories(array $directories): self
+    {
+        $this->directories = $directories;
+
+        return $this;
     }
 
     /**
@@ -58,6 +82,9 @@ final class Attributes
      */
     private function loadClasses(): array
     {
+        if ($this->directories === []) {
+            return [];
+        }
         $finder = Finder::create()->name('*.php')->in($this->directories);
         $classes = (new ClassLocator($finder))->getClasses();
 
