@@ -6,7 +6,7 @@ namespace RustamWin\Attributes\Tests\Support;
 
 final class MockEntity
 {
-    #[MockAttribute('Hello, %s!', ['World'])]
+    #[MockAttribute('Hello, %s!', args: ['World'])]
     public function getValue(string $format, array $values): string
     {
         return sprintf($format, ...$values);
