@@ -15,8 +15,6 @@
     "require": {
         "php": "^8.0",
         "jetbrains/phpstorm-attributes": "^1.0",
-        "mbunge/php-attributes": "dev-master",
-        "spiral/attributes": "2.9.x-dev",
         "spiral/tokenizer": "2.9.x-dev"
     },
     "require-dev": {
