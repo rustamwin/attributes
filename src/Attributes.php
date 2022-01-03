@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace RustamWin\Attributes;
 
+use JetBrains\PhpStorm\Pure;
 use ReflectionClass;
 use ReflectionException;
 use RustamWin\Attributes\Presenter\AttributePresenterInterface;
@@ -18,12 +19,16 @@ final class Attributes
     private AttributeReaderInterface $attributeReader;
     private SplObjectStorage $attributes;
     private AttributePresenterInterface $attributePresenter;
+    /**
+     * @var array<array-key, string>
+     */
     private array $directories = [];
     /**
      * @var array<class-string>
      */
     private array $classes = [];
 
+    #[Pure]
     public function __construct(
         AttributePresenterInterface $attributePresenter,
         ?AttributeReaderInterface $attributeReader = null,
@@ -33,9 +38,11 @@ final class Attributes
         $this->attributes = new SplObjectStorage();
     }
 
+    /**
+     * @throws ReflectionException
+     */
     public function handle(): void
     {
-        /** @var ReflectionClass[] $classes */
         $classes = array_unique(array_merge($this->getClasses(), $this->loadClasses()));
         foreach ($classes as $reflectionClass) {
             $resolvedAttributes = $this->attributeReader->read($reflectionClass);
@@ -45,7 +52,7 @@ final class Attributes
     }
 
     /**
-     * @param array $classes
+     * @param array<class-string> $classes
      *
      * @return $this
      */
@@ -57,7 +64,7 @@ final class Attributes
     }
 
     /**
-     * @param array $directories
+     * @param array<array-key, string> $directories
      *
      * @return $this
      */
@@ -71,7 +78,7 @@ final class Attributes
     /**
      * @throws ReflectionException
      *
-     * @return ReflectionClass[]
+     * @return array<array-key, ReflectionClass<object>>
      */
     private function getClasses(): array
     {
@@ -83,6 +90,8 @@ final class Attributes
 
     /**
      * @return ReflectionClass[]
+     *
+     * @psalm-return list<ReflectionClass<object>>
      */
     private function loadClasses(): array
     {

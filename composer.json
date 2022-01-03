@@ -11,17 +11,24 @@
         "issues": "https://github.com/rustamwin/attributes/issues?state=open",
         "source": "https://github.com/rustamwin/attributes"
     },
+    "funding": [
+        {
+            "type": "patreon",
+            "url": "https://www.patreon.com/rustamwin"
+        }
+    ],
     "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
         "php": "^8.0",
         "jetbrains/phpstorm-attributes": "^1.0",
         "spiral/tokenizer": "2.9.x-dev"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.4",
-        "roave/infection-static-analysis-plugin": "^1.5",
+        "phpunit/phpunit": "^9.5",
+        "roave/infection-static-analysis-plugin": "^1.9",
         "spatie/phpunit-watcher": "^1.23",
-        "vimeo/psalm": "^4.2"
+        "vimeo/psalm": "^4.9"
     },
     "autoload": {
         "psr-4": {

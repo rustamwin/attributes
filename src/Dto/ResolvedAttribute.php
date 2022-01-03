@@ -9,7 +9,7 @@ use Reflector;
 final class ResolvedAttribute
 {
     /**
-     * @template T of Reflector
+     * @template T instance of Reflector
      *
      * @param object $attribute
      * @param T $reflectionTarget

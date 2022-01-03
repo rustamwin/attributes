@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace RustamWin\Attributes\Tests\Support;
 
 use ReflectionClass;
+use RustamWin\Attributes\Presenter\AttributePresenterInterface;
 
-final class SimplePresenter implements \RustamWin\Attributes\Presenter\AttributePresenterInterface
+final class SimplePresenter implements AttributePresenterInterface
 {
     private static array $values = [];
 

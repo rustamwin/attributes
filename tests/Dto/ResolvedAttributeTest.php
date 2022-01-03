@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 use RustamWin\Attributes\Tests\Support\MockAttribute;
 use RustamWin\Attributes\Tests\Support\MockEntity;
 
-class ResolvedAttributeTest extends TestCase
+final class ResolvedAttributeTest extends TestCase
 {
     public function testGetters(): void
     {

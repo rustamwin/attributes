@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 use RustamWin\Attributes\Tests\Support\MockAttribute;
 use RustamWin\Attributes\Tests\Support\MockEntity;
 
-class InstantiatorTest extends TestCase
+final class InstantiatorTest extends TestCase
 {
     public function testInstantiate(): void
     {

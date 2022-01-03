@@ -7,8 +7,10 @@ namespace RustamWin\Attributes\Reader;
 use JetBrains\PhpStorm\Pure;
 use ReflectionAttribute;
 use ReflectionClass;
+use ReflectionClassConstant;
 use ReflectionMethod;
-use Reflector;
+use ReflectionParameter;
+use ReflectionProperty;
 use RustamWin\Attributes\Dto\ResolvedAttribute;
 use RustamWin\Attributes\Instantiator\Instantiator;
 use RustamWin\Attributes\Instantiator\InstantiatorInterface;
@@ -36,6 +38,11 @@ final class AttributeReader implements AttributeReaderInterface
         );
     }
 
+    /**
+     * @return ResolvedAttribute[]
+     *
+     * @psalm-return array<ResolvedAttribute>
+     */
     private function readClassAttributes(ReflectionClass $class): array
     {
         return $this->readAttributes($class);
@@ -53,6 +60,11 @@ final class AttributeReader implements AttributeReaderInterface
         return $this->mapAttributes($properties);
     }
 
+    /**
+     * @param ReflectionClass $class
+     *
+     * @return array<array-key, ResolvedAttribute>
+     */
     private function readMethodAttributes(ReflectionClass $class): array
     {
         $methods = $class->getMethods();
@@ -73,25 +85,26 @@ final class AttributeReader implements AttributeReaderInterface
     }
 
     /**
-     * @psalm-template T instance of Reflector
-     *
-     * @psalm-param T $ref
-     * @param Reflector $ref
-     *
      * @return ResolvedAttribute[]
      */
-    private function readAttributes(Reflector $ref): array
-    {
+    private function readAttributes(
+        ReflectionClass|ReflectionClassConstant|ReflectionProperty|ReflectionMethod|ReflectionParameter $ref
+    ): array {
         return array_map(
             fn (ReflectionAttribute $attribute) => new ResolvedAttribute(
                 attribute: $this->instantiator->instantiate($attribute),
                 reflectionTarget: $ref
             ),
-            $this->filterAttributes(...$ref->getAttributes())
+            $this->filterAttributes($ref->getAttributes())
         );
     }
 
-    private function filterAttributes(ReflectionAttribute ...$attributes): array
+    /**
+     * @param array $attributes
+     *
+     * @return array
+     */
+    private function filterAttributes(array $attributes): array
     {
         return array_filter(
             $attributes,
@@ -100,18 +113,16 @@ final class AttributeReader implements AttributeReaderInterface
     }
 
     /**
-     * @psalm-template T instance of Reflector
+     * @psalm-param list<ReflectionClass|ReflectionClassConstant|ReflectionProperty|ReflectionMethod|ReflectionParameter> $targets
      *
-     * @param Reflector[] $targets
+     * @return ResolvedAttribute[]
      *
-     * @psalm-param list<T> $targets
-     *
-     * @return array
+     * @psalm-return array<ResolvedAttribute>
      */
     private function mapAttributes(array $targets): array
     {
         $resolvedAttributes = array_map(
-            fn (Reflector $targetRef) => $this->readAttributes($targetRef),
+            fn ($targetRef) => $this->readAttributes($targetRef),
             $targets
         );
 
