@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace RustamWin\Attributes;
 
 use ReflectionClass;
+use ReflectionException;
 use RustamWin\Attributes\Presenter\AttributePresenterInterface;
 use RustamWin\Attributes\Reader\AttributeReader;
 use RustamWin\Attributes\Reader\AttributeReaderInterface;
@@ -45,6 +46,7 @@ final class Attributes
 
     /**
      * @param array $classes
+     *
      * @return $this
      */
     public function setClasses(array $classes): self
@@ -56,6 +58,7 @@ final class Attributes
 
     /**
      * @param array $directories
+     *
      * @return $this
      */
     public function setDirectories(array $directories): self
@@ -66,8 +69,9 @@ final class Attributes
     }
 
     /**
+     * @throws ReflectionException
+     *
      * @return ReflectionClass[]
-     * @throws \ReflectionException
      */
     private function getClasses(): array
     {

@@ -1,5 +1,5 @@
 <p align="center">
-    <h1 align="center">Attributes</h1>
+    <h1 align="center">PHP Attributes</h1>
     <br>
 </p>
 
@@ -13,7 +13,7 @@
 
 ## Requirements
 
-- PHP 7.4 or higher.
+- PHP 8.0 or higher.
 
 ## Installation
 
@@ -38,7 +38,7 @@ The package is tested with [PHPUnit](https://phpunit.de/). To run tests:
 The package tests are checked with [Infection](https://infection.github.io/) mutation framework. To run it:
 
 ```shell
-./vendor/bin/infection
+./vendor/bin/roave-infection-static-analysis-plugin
 ```
 
 ### Static analysis

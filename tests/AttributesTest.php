@@ -7,7 +7,7 @@ namespace RustamWin\Attributes\Tests;
 use PHPUnit\Framework\TestCase;
 use RustamWin\Attributes\Tests\Support\SimplePresenter;
 
-class AttributesTest extends TestCase
+final class AttributesTest extends TestCase
 {
     public function testHandle()
     {

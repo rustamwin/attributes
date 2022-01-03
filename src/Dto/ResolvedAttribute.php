@@ -4,11 +4,16 @@ declare(strict_types=1);
 
 namespace RustamWin\Attributes\Dto;
 
-use ReflectionClass;
 use Reflector;
 
 final class ResolvedAttribute
 {
+    /**
+     * @template T of Reflector
+     *
+     * @param object $attribute
+     * @param T $reflectionTarget
+     */
     public function __construct(
         private object $attribute,
         private Reflector $reflectionTarget
@@ -22,7 +27,9 @@ final class ResolvedAttribute
     }
 
     /**
-     * @return ReflectionClass|\ReflectionClassConstant|\ReflectionProperty|\ReflectionMethod|\ReflectionParameter
+     * @template T of Reflector
+     *
+     * @return T
      */
     public function getReflectionTarget(): Reflector
     {

@@ -11,6 +11,7 @@ interface AttributeReaderInterface
 {
     /**
      * @param ReflectionClass $ref
+     *
      * @return ResolvedAttribute[]
      */
     public function read(ReflectionClass $ref): array;

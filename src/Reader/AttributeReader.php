@@ -15,10 +15,12 @@ use RustamWin\Attributes\Instantiator\InstantiatorInterface;
 
 final class AttributeReader implements AttributeReaderInterface
 {
+    private InstantiatorInterface $instantiator;
+
     #[Pure]
-    public function __construct(private ?InstantiatorInterface $instantiator)
+    public function __construct(?InstantiatorInterface $instantiator)
     {
-        $this->instantiator ??= new Instantiator();
+        $this->instantiator = $instantiator ?? new Instantiator();
     }
 
     /**
@@ -57,7 +59,7 @@ final class AttributeReader implements AttributeReaderInterface
         $mappedMethods = $this->mapAttributes($methods);
 
         $mappedParameters = array_map(
-            fn ($method) => $this->readParameterAttributes($method),
+            fn (ReflectionMethod $method) => $this->readParameterAttributes($method),
             $methods
         );
 
@@ -71,7 +73,11 @@ final class AttributeReader implements AttributeReaderInterface
     }
 
     /**
+     * @psalm-template T instance of Reflector
+     *
+     * @psalm-param T $ref
      * @param Reflector $ref
+     *
      * @return ResolvedAttribute[]
      */
     private function readAttributes(Reflector $ref): array
@@ -94,14 +100,18 @@ final class AttributeReader implements AttributeReaderInterface
     }
 
     /**
+     * @psalm-template T instance of Reflector
+     *
      * @param Reflector[] $targets
-     * @psalm-param list<Reflector> $targets
+     *
+     * @psalm-param list<T> $targets
+     *
      * @return array
      */
     private function mapAttributes(array $targets): array
     {
         $resolvedAttributes = array_map(
-            fn ($targetRef) => $this->readAttributes($targetRef),
+            fn (Reflector $targetRef) => $this->readAttributes($targetRef),
             $targets
         );
 
