@@ -52,7 +52,7 @@ final class Attributes
     }
 
     /**
-     * @param array<class-string> $classes
+     * @psalm-param array<class-string> $classes
      *
      * @return $this
      */
@@ -64,7 +64,7 @@ final class Attributes
     }
 
     /**
-     * @param array<array-key, string> $directories
+     * @psalm-param array<array-key, string> $directories
      *
      * @return $this
      */
@@ -78,7 +78,7 @@ final class Attributes
     /**
      * @throws ReflectionException
      *
-     * @return array<array-key, ReflectionClass<object>>
+     * @psalm-return array<array-key, ReflectionClass<object>>
      */
     private function getClasses(): array
     {

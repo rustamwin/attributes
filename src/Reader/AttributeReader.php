@@ -61,9 +61,7 @@ final class AttributeReader implements AttributeReaderInterface
     }
 
     /**
-     * @param ReflectionClass $class
-     *
-     * @return array<array-key, ResolvedAttribute>
+     * @psalm-return array<array-key, ResolvedAttribute>
      */
     private function readMethodAttributes(ReflectionClass $class): array
     {
