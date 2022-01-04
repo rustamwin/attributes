@@ -20,8 +20,18 @@ final class CompositePresenter implements AttributePresenterInterface
      */
     public function present(ReflectionClass $class, array $attributes): iterable
     {
+        $this->validatePresenters();
         foreach ($this->presenters as $presenter) {
             yield $presenter->present($class, $attributes);
+        }
+    }
+
+    private function validatePresenters(): void
+    {
+        foreach ($this->presenters as $presenter) {
+            if (!$presenter instanceof AttributePresenterInterface) {
+                throw new \InvalidArgumentException(sprintf('Presenter must implement AttributePresenterInterface, got %s.', get_debug_type($presenter)));
+            }
         }
     }
 }

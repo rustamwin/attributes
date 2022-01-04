@@ -27,9 +27,11 @@ final class ResolvedAttribute
     }
 
     /**
-     * @template T of Reflector
+     * @psalm-template T of Reflector
      *
-     * @return T
+     * @psalm-return T
+     *
+     * @return Reflector
      */
     public function getReflectionTarget(): Reflector
     {

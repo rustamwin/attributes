@@ -11,6 +11,15 @@ use ReflectionAttribute;
  */
 final class Instantiator implements InstantiatorInterface
 {
+    /**
+     * @psalm-template T of object
+     * @psalm-param ReflectionAttribute<T> $attribute
+     * @psalm-return T
+     *
+     * @param ReflectionAttribute $attribute
+     *
+     * @return object
+     */
     public function instantiate(ReflectionAttribute $attribute): object
     {
         // TODO
