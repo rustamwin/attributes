@@ -20,7 +20,7 @@ final class AttributeReader implements AttributeReaderInterface
     private InstantiatorInterface $instantiator;
 
     #[Pure]
-    public function __construct(?InstantiatorInterface $instantiator)
+    public function __construct(?InstantiatorInterface $instantiator = null)
     {
         $this->instantiator = $instantiator ?? new Instantiator();
     }
