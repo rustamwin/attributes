@@ -10,7 +10,7 @@ use JetBrains\PhpStorm\Immutable;
 #[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD)]
 final class MockAttribute
 {
-    public function __construct(#[Immutable] public string $value, public array $args = [])
+    public function __construct(public string $value, public array $args = [])
     {
     }
 }

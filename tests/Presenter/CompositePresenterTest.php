@@ -18,16 +18,17 @@ class CompositePresenterTest extends TestCase
 
         $result = $presenter->present(new ReflectionClass(MockEntity::class), []);
 
-        self::assertInstanceOf(\Generator::class, $result);
+        self::assertInstanceOf(\Traversable::class, $result);
+        self::assertContainsOnlyInstancesOf(ReflectionClass::class, iterator_to_array($result));
     }
 
-    private function getPresenter()
+    private function getPresenter(): AttributePresenterInterface
     {
         return new class () implements AttributePresenterInterface {
 
             public function present(ReflectionClass $class, array $attributes): mixed
             {
-                return $attributes;
+                return $class;
             }
         };
     }
