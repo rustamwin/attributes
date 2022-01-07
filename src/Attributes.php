@@ -7,7 +7,7 @@ namespace RustamWin\Attributes;
 use JetBrains\PhpStorm\Pure;
 use ReflectionClass;
 use ReflectionException;
-use RustamWin\Attributes\Presenter\AttributePresenterInterface;
+use RustamWin\Attributes\Handler\AttributeHandlerInterface;
 use RustamWin\Attributes\Reader\AttributeReader;
 use RustamWin\Attributes\Reader\AttributeReaderInterface;
 use Spiral\Tokenizer\ClassLocator;
@@ -18,7 +18,7 @@ final class Attributes
 {
     private AttributeReaderInterface $attributeReader;
     private SplObjectStorage $attributes;
-    private AttributePresenterInterface $attributePresenter;
+    private AttributeHandlerInterface $attributeHandler;
     /**
      * @var array<array-key, string>
      */
@@ -30,11 +30,11 @@ final class Attributes
 
     #[Pure]
     public function __construct(
-        AttributePresenterInterface $attributePresenter,
+        AttributeHandlerInterface $attributeHandler,
         ?AttributeReaderInterface $attributeReader = null,
     ) {
         $this->attributeReader = $attributeReader ?? new AttributeReader(new Instantiator\Instantiator());
-        $this->attributePresenter = $attributePresenter;
+        $this->attributeHandler = $attributeHandler;
         $this->attributes = new SplObjectStorage();
     }
 
@@ -47,7 +47,7 @@ final class Attributes
         foreach ($classes as $reflectionClass) {
             $resolvedAttributes = $this->attributeReader->read($reflectionClass);
             $this->attributes->attach($reflectionClass);
-            $this->attributePresenter->present($reflectionClass, $resolvedAttributes);
+            $this->attributeHandler->handle($reflectionClass, $resolvedAttributes);
         }
     }
 

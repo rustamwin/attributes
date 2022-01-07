@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace RustamWin\Attributes\Presenter;
+namespace RustamWin\Attributes\Handler;
 
 use ReflectionClass;
 use RustamWin\Attributes\Dto\ResolvedAttribute;
 
-interface AttributePresenterInterface
+interface AttributeHandlerInterface
 {
     /**
      * @param ReflectionClass $class
      * @param ResolvedAttribute[] $attributes
      */
-    public function present(ReflectionClass $class, array $attributes): mixed;
+    public function handle(ReflectionClass $class, array $attributes): void;
 }
