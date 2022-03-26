@@ -5,20 +5,21 @@ declare(strict_types=1);
 namespace RustamWin\Attributes;
 
 use JetBrains\PhpStorm\Pure;
+use Psr\SimpleCache\CacheInterface;
 use ReflectionClass;
 use ReflectionException;
+use RustamWin\Attributes\Dto\ResolvedAttribute;
 use RustamWin\Attributes\Handler\AttributeHandlerInterface;
 use RustamWin\Attributes\Reader\AttributeReader;
 use RustamWin\Attributes\Reader\AttributeReaderInterface;
 use Spiral\Tokenizer\ClassLocator;
-use SplObjectStorage;
 use Symfony\Component\Finder\Finder;
 
 final class Attributes
 {
     private AttributeReaderInterface $attributeReader;
-    private SplObjectStorage $attributes;
     private AttributeHandlerInterface $attributeHandler;
+    private ?CacheInterface $cache;
     /**
      * @var array<array-key, string>
      */
@@ -32,10 +33,11 @@ final class Attributes
     public function __construct(
         AttributeHandlerInterface $attributeHandler,
         ?AttributeReaderInterface $attributeReader = null,
+        ?CacheInterface $cache = null
     ) {
-        $this->attributeReader = $attributeReader ?? new AttributeReader(new Instantiator\Instantiator());
         $this->attributeHandler = $attributeHandler;
-        $this->attributes = new SplObjectStorage();
+        $this->attributeReader = $attributeReader ?? new AttributeReader(new Instantiator\Instantiator());
+        $this->cache = $cache;
     }
 
     /**
@@ -43,12 +45,35 @@ final class Attributes
      */
     public function handle(): void
     {
+        /** @var ReflectionClass[] $classes */
         $classes = array_unique(array_merge($this->getClasses(), $this->loadClasses()));
         foreach ($classes as $reflectionClass) {
             $resolvedAttributes = $this->attributeReader->read($reflectionClass);
-            $this->attributes->attach($reflectionClass);
+            $this->cache?->set($reflectionClass->getName(), $resolvedAttributes);
             $this->attributeHandler->handle($reflectionClass, $resolvedAttributes);
         }
+    }
+
+    /**
+     * @param class-string $class
+     *
+     * @throws ReflectionException
+     * @throws \Psr\SimpleCache\InvalidArgumentException
+     *
+     * @return array
+     */
+    public function getClassMetadata(string $class): array
+    {
+        /** @var ResolvedAttribute[]|null $resolvedAttributes */
+        $resolvedAttributes = $this->cache?->get($class);
+        if ($resolvedAttributes !== null) {
+            return $resolvedAttributes;
+        }
+        $ref = new ReflectionClass($class);
+        $resolvedAttributes = $this->attributeReader->read($ref);
+        $this->cache?->set($class, $resolvedAttributes);
+
+        return $resolvedAttributes;
     }
 
     /**

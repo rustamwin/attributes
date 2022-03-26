@@ -22,7 +22,7 @@ final class Instantiator implements InstantiatorInterface
      */
     public function instantiate(ReflectionAttribute $attribute): object
     {
-        // TODO
+        // TODO: check
         return $attribute->newInstance();
     }
 }
