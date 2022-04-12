@@ -14,18 +14,12 @@ final class SimpleHandler implements AttributeHandlerInterface
     /**
      * @inheritDoc
      */
-    public function handle(ReflectionClass $class, array $attributes): void
+    public function handle(ReflectionClass $class, iterable $attributes): void
     {
         foreach ($attributes as $resolved) {
-            if ($resolved->getReflectionTarget() instanceof \ReflectionMethod) {
-                /** @var MockAttribute $attribute */
-                $attribute = $resolved->getAttribute();
-                self::$values[] = $resolved->getReflectionTarget()->invoke(
-                    $class->newInstanceWithoutConstructor(),
-                    $attribute->value,
-                    $attribute->args
-                );
-            }
+            /** @var MockAttribute $attribute */
+            $attribute = $resolved->getAttribute();
+            self::$values[] = $attribute->value;
         }
     }
 

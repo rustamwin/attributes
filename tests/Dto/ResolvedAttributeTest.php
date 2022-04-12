@@ -2,10 +2,10 @@
 
 namespace RustamWin\Attributes\Tests\Dto;
 
-use RustamWin\Attributes\Dto\ResolvedAttribute;
 use PHPUnit\Framework\TestCase;
+use RustamWin\Attributes\Dto\ResolvedAttribute;
+use RustamWin\Attributes\Tests\Support\Entity\MockEntity;
 use RustamWin\Attributes\Tests\Support\MockAttribute;
-use RustamWin\Attributes\Tests\Support\MockEntity;
 
 final class ResolvedAttributeTest extends TestCase
 {

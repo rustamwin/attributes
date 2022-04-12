@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use RustamWin\Attributes\Handler\AttributeHandlerInterface;
 use RustamWin\Attributes\Handler\CompositeHandler;
-use RustamWin\Attributes\Tests\Support\MockEntity;
+use RustamWin\Attributes\Tests\Support\Entity\MockEntity;
 
 class CompositeHandlerTest extends TestCase
 {
@@ -29,7 +29,7 @@ class CompositeHandlerTest extends TestCase
         return new class () implements AttributeHandlerInterface {
             private array $classes = [];
 
-            public function handle(ReflectionClass $class, array $attributes): void
+            public function handle(ReflectionClass $class, iterable $attributes): void
             {
                 $this->classes[] = $class;
             }

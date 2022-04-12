@@ -5,21 +5,20 @@ declare(strict_types=1);
 namespace RustamWin\Attributes;
 
 use JetBrains\PhpStorm\Pure;
-use Psr\SimpleCache\CacheInterface;
 use ReflectionClass;
 use ReflectionException;
 use RustamWin\Attributes\Dto\ResolvedAttribute;
 use RustamWin\Attributes\Handler\AttributeHandlerInterface;
-use RustamWin\Attributes\Reader\AttributeReader;
-use RustamWin\Attributes\Reader\AttributeReaderInterface;
+use RustamWin\Attributes\Instantiator\Instantiator;
+use Spiral\Attributes\AttributeReader;
+use Spiral\Attributes\ReaderInterface;
 use Spiral\Tokenizer\ClassLocator;
 use Symfony\Component\Finder\Finder;
 
 final class Attributes
 {
-    private AttributeReaderInterface $attributeReader;
+    private ReaderInterface $attributeReader;
     private AttributeHandlerInterface $attributeHandler;
-    private ?CacheInterface $cache;
     /**
      * @var array<array-key, string>
      */
@@ -32,12 +31,10 @@ final class Attributes
     #[Pure]
     public function __construct(
         AttributeHandlerInterface $attributeHandler,
-        ?AttributeReaderInterface $attributeReader = null,
-        ?CacheInterface $cache = null
+        ?ReaderInterface $attributeReader = null
     ) {
         $this->attributeHandler = $attributeHandler;
-        $this->attributeReader = $attributeReader ?? new AttributeReader(new Instantiator\Instantiator());
-        $this->cache = $cache;
+        $this->attributeReader = $attributeReader ?? new AttributeReader(new Instantiator());
     }
 
     /**
@@ -48,32 +45,9 @@ final class Attributes
         /** @var ReflectionClass[] $classes */
         $classes = array_unique(array_merge($this->getClasses(), $this->loadClasses()));
         foreach ($classes as $reflectionClass) {
-            $resolvedAttributes = $this->attributeReader->read($reflectionClass);
-            $this->cache?->set($reflectionClass->getName(), $resolvedAttributes);
+            $resolvedAttributes = $this->resolveAttributes($reflectionClass);
             $this->attributeHandler->handle($reflectionClass, $resolvedAttributes);
         }
-    }
-
-    /**
-     * @param class-string $class
-     *
-     * @throws ReflectionException
-     * @throws \Psr\SimpleCache\InvalidArgumentException
-     *
-     * @return array
-     */
-    public function getClassMetadata(string $class): array
-    {
-        /** @var ResolvedAttribute[]|null $resolvedAttributes */
-        $resolvedAttributes = $this->cache?->get($class);
-        if ($resolvedAttributes !== null) {
-            return $resolvedAttributes;
-        }
-        $ref = new ReflectionClass($class);
-        $resolvedAttributes = $this->attributeReader->read($ref);
-        $this->cache?->set($class, $resolvedAttributes);
-
-        return $resolvedAttributes;
     }
 
     /**
@@ -98,6 +72,38 @@ final class Attributes
         $this->directories = $directories;
 
         return $this;
+    }
+
+    private function resolveAttributes(ReflectionClass $ref): iterable
+    {
+        // class attributes
+        foreach ($this->attributeReader->getClassMetadata($ref) as $attribute) {
+            yield new ResolvedAttribute(attribute: $attribute, reflectionTarget: $ref);
+        }
+        // properties
+        foreach ($ref->getProperties() as $property) {
+            foreach ($this->attributeReader->getPropertyMetadata($property) as $attribute) {
+                yield new ResolvedAttribute(attribute: $attribute, reflectionTarget: $property);
+            }
+        }
+        // constants
+        foreach ($ref->getConstants() as $constant) {
+            foreach ($this->attributeReader->getConstantMetadata($constant) as $attribute) {
+                yield new ResolvedAttribute(attribute: $attribute, reflectionTarget: $constant);
+            }
+        }
+        // methods
+        foreach ($ref->getMethods() as $method) {
+            foreach ($this->attributeReader->getFunctionMetadata($method) as $attribute) {
+                yield new ResolvedAttribute(attribute: $attribute, reflectionTarget: $method);
+                // parameters
+                foreach ($method->getParameters() as $parameter) {
+                    foreach ($this->attributeReader->getParameterMetadata($parameter) as $parameterAttribute) {
+                        yield new ResolvedAttribute(attribute: $parameterAttribute, reflectionTarget: $parameter);
+                    }
+                }
+            }
+        }
     }
 
     /**

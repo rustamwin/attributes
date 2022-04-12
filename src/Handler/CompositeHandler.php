@@ -18,7 +18,7 @@ final class CompositeHandler implements AttributeHandlerInterface
     /**
      * @inheritDoc
      */
-    public function handle(ReflectionClass $class, array $attributes): void
+    public function handle(ReflectionClass $class, iterable $attributes): void
     {
         $this->validateHandlers();
         foreach ($this->handlers as $handler) {

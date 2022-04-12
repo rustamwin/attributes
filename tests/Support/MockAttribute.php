@@ -6,10 +6,10 @@ namespace RustamWin\Attributes\Tests\Support;
 
 use Attribute;
 
-#[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD)]
+#[Attribute(Attribute::TARGET_ALL | Attribute::IS_REPEATABLE)]
 final class MockAttribute
 {
-    public function __construct(public string $value, public array $args = [])
+    public function __construct(public string $value)
     {
     }
 }

@@ -10,8 +10,7 @@ use RustamWin\Attributes\Dto\ResolvedAttribute;
 interface AttributeHandlerInterface
 {
     /**
-     * @param ReflectionClass $class
-     * @param ResolvedAttribute[] $attributes
+     * @psalm-param iterable<ResolvedAttribute> $attributes
      */
-    public function handle(ReflectionClass $class, array $attributes): void;
+    public function handle(ReflectionClass $class, iterable $attributes): void;
 }
