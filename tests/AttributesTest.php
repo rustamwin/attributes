@@ -15,6 +15,8 @@ final class AttributesTest extends TestCase
     public function testHandle(): void
     {
         $this->assertContains('class', SimpleHandler::getValues());
+        $this->assertContains('const', SimpleHandler::getValues());
+        $this->assertContains('property', SimpleHandler::getValues());
         $this->assertContains('method', SimpleHandler::getValues());
         $this->assertContains('parameter', SimpleHandler::getValues());
     }
@@ -26,6 +28,8 @@ final class AttributesTest extends TestCase
         $attributes->setClasses([MockEntity::class])->setDirectories([__DIR__ . '/Support/Entity'])->handle();
 
         $this->assertContains('class', SimpleHandler::getValues());
+        $this->assertContains('const', SimpleHandler::getValues());
+        $this->assertContains('property', SimpleHandler::getValues());
         $this->assertContains('method', SimpleHandler::getValues());
         $this->assertContains('parameter', SimpleHandler::getValues());
     }

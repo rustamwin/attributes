@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace RustamWin\Attributes;
 
-use JetBrains\PhpStorm\Pure;
 use ReflectionClass;
 use ReflectionException;
 use RustamWin\Attributes\Dto\ResolvedAttribute;
@@ -28,7 +27,6 @@ final class Attributes
      */
     private array $classes = [];
 
-    #[Pure]
     public function __construct(
         AttributeHandlerInterface $attributeHandler,
         ?ReaderInterface $attributeReader = null
@@ -87,7 +85,7 @@ final class Attributes
             }
         }
         // constants
-        foreach ($ref->getConstants() as $constant) {
+        foreach ($ref->getReflectionConstants() as $constant) {
             foreach ($this->attributeReader->getConstantMetadata($constant) as $attribute) {
                 yield new ResolvedAttribute(attribute: $attribute, reflectionTarget: $constant);
             }
