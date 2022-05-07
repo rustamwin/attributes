@@ -13,6 +13,7 @@ final class CompositeHandler implements AttributeHandlerInterface
      */
     public function __construct(private array $handlers)
     {
+        $this->validateHandlers();
     }
 
     /**
@@ -20,7 +21,6 @@ final class CompositeHandler implements AttributeHandlerInterface
      */
     public function handle(ReflectionClass $class, iterable $attributes): void
     {
-        $this->validateHandlers();
         foreach ($this->handlers as $handler) {
             $handler->handle($class, $attributes);
         }

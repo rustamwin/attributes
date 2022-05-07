@@ -61,7 +61,7 @@ final class Attributes
     }
 
     /**
-     * @psalm-param array<array-key, string> $directories
+     * @param array<array-key, string> $directories
      *
      * @return $this
      */
@@ -78,18 +78,21 @@ final class Attributes
         foreach ($this->attributeReader->getClassMetadata($ref) as $attribute) {
             yield new ResolvedAttribute(attribute: $attribute, reflectionTarget: $ref);
         }
+
         // properties
         foreach ($ref->getProperties() as $property) {
             foreach ($this->attributeReader->getPropertyMetadata($property) as $attribute) {
                 yield new ResolvedAttribute(attribute: $attribute, reflectionTarget: $property);
             }
         }
+
         // constants
         foreach ($ref->getReflectionConstants() as $constant) {
             foreach ($this->attributeReader->getConstantMetadata($constant) as $attribute) {
                 yield new ResolvedAttribute(attribute: $attribute, reflectionTarget: $constant);
             }
         }
+
         // methods
         foreach ($ref->getMethods() as $method) {
             foreach ($this->attributeReader->getFunctionMetadata($method) as $attribute) {
